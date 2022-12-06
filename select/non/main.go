@@ -20,6 +20,7 @@ func main() {
 			fmt.Println(m)
 		default:
 			fmt.Println("No message received")
+			fmt.Println()
 
 		}
 
