@@ -5,6 +5,12 @@ import (
 	"sync"
 )
 
+/*
+Go language provides a special feature known as an anonymous function. An anonymous function can form a closure.
+ A closure is a special type of anonymous function that references variables declared outside of the function itself.
+ It is similar to accessing global variables which are available before the declaration of the function.
+*/
+
 func main() {
 	// a := func(a int) int {
 	// 	var i int
@@ -43,11 +49,11 @@ func main() {
 	var wg sync.WaitGroup
 	for i := 0; i < 20; i++ {
 		wg.Add(1)
-		// go func() {
+		// go func(i int) {
 		// 	defer wg.Done()
 		// 	fmt.Println(i)
 
-		// }()
+		// }(i)
 
 		go func(i int) {
 			defer wg.Done()
