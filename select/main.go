@@ -36,5 +36,5 @@ func main() {
 	}
 	wg.Wait()
 	//fmt.Println(<-ch1)
-
+	fmt.Println("Hello World")
 }
