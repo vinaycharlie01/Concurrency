@@ -3,7 +3,7 @@
 ---
 
 ### Concurrency 
-             +Concurrency is about multiple things happening at same time in random order
+             + Concurrency is about multiple things happening at same time in random order
              + Concurrent programs may or may not run in parallel. Concurrency is more about the structure of a program, which enables it to potentially run in parallel.
              + Go provides a built-in support for concurrency.
 #### ex
