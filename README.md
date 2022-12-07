@@ -24,6 +24,8 @@
 3. select
 4. sync package
 
+
+#### Normal Functions
 ```go
 
 package main
@@ -53,10 +55,145 @@ func main() {
 }
 ```
 ```bash
+output:
 Dringking coffee,index 0 and name Vinay
 Dringking coffee,index 1 and name Vinay
 Dringking coffee,index 2 and name Vinay
 Waching tv ,index 0 and name Vinay
 Waching tv ,index 1 and name Vinay
 Waching tv ,index 2 and name Vinay
+```
+
+we ne concurrently watching tv and  drinking coffee may or may not be same time but we need working  concurrently
+we can achieve  using goroutines in golang
+
+### Goroutine
++ Goroutine works like the thread in java
++ We can think Goroutines as user space threads 
+`managed by go runtime`.
++ Goroutines extremely lightweight. Goroutines starts with 
+2KB of stack, which grows and shrinks as required.
++ Can create hundreds of thousands of goroutines in the 
+same address space.
++ Channels are used for communication of data between 
+goroutines. Sharing of memory can be avoided.
+
+syntax
+```go
+   go function name
+   go fun1()
+   go fun2()
+   go fun3()
+```
+
+
+### What is a Thread?
++ Threads are smallest unit of execution that CPU accepts.
++ Process has atleast one thread - main thread.
++ Process can have multiple threads.
++ Threads share same address space.
+
+
+### What are advantages of goroutines over OS threads?
++ Goroutine are extremely lightweight compared to OS 
+threads.
++ Stack size is very small of 2kb as opposed to 8MB of stack 
+of OS threads.
++ Context switching is very cheap as it happens in user 
+space, goroutines have very less state to be stored.
++ Houndreds of thousands of goroutines can be created on 
+single machine.
+
+#### ex
+```go
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+func DringkingCoffee(a string) {
+	for i := 0; i < 3; i++ {
+		fmt.Printf("Dringking coffee,index %d and name %s\n", i, a)
+		time.Sleep(1 * time.Millisecond)
+	}
+}
+
+func Watching_Tv(a string) {
+	for i := 0; i < 3; i++ {
+		fmt.Printf("Waching tv ,index %d and name %s\n", i, a)
+		time.Sleep(1 * time.Millisecond)
+
+	}
+}
+
+func main() {
+	var a string = "Vinay"
+	go DringkingCoffee(a)
+	go Watching_Tv(a)
+	time.Sleep(2 * time.Second)
+}
+```
+```go
+$ go run main.go
+Waching tv ,index 0 and name Vinay
+Dringking coffee,index 0 and name Vinay
+Dringking coffee,index 1 and name Vinay
+Waching tv ,index 1 and name Vinay
+Waching tv ,index 2 and name Vinay
+Dringking coffee,index 2 and name Vinay
+```
+
+### we can do better way by using `sync pkgs  waitgroup func`
+```go
+package main
+
+import (
+	"fmt"
+	"sync"
+	"time"
+)
+
+func DringkingCoffee(a string, wg *sync.WaitGroup) {
+	//after completing loop we need to tell the waiting its done
+	defer wg.Done()
+	for i := 0; i < 3; i++ {
+		fmt.Printf("Dringking coffee,index %d and name %s\n", i, a)
+		time.Sleep(1 * time.Millisecond)
+	}
+}
+
+func Watching_Tv(a string, wg *sync.WaitGroup) {
+	//wg.Done()
+	for i := 0; i < 3; i++ {
+		fmt.Printf("Waching tv ,index %d and name %s\n", i, a)
+		time.Sleep(1 * time.Millisecond)
+
+	}
+	wg.Done()
+}
+
+func main() {
+	var a string = "Vinay"
+	var wg sync.WaitGroup
+
+	//How many go routines running
+	wg.Add(2)
+	go DringkingCoffee(a, &wg)
+	go Watching_Tv(a, &wg)
+	//time.Sleep(2 * time.Second)
+	//then main() function waiting for go routines function  we need to wait for go routines function joined to the main function
+	wg.Wait()
+
+}
+```
+```go
+$ go run main.go
+Waching tv ,index 0 and name Vinay
+Dringking coffee,index 0 and name Vinay
+Dringking coffee,index 1 and name Vinay
+Waching tv ,index 1 and name Vinay
+Waching tv ,index 2 and name Vinay
+Dringking coffee,index 2 and name Vinay
 ```
