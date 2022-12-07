@@ -1,0 +1,26 @@
+sync package
+
+
+
+
+Mutex is used to protect the data
+
+
+synax:
+
+var mu sync.Mutex
+
+mu.lock()
+
+balance+=ammout
+
+mu.unlock()
+
+
+or
+
+mu.lock()
+
+defer mu.unlock()
+
+balance+=ammout
