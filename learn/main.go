@@ -133,5 +133,6 @@ func main() {
 		fmt.Println(v)
 	}
 	// wg.Wait()
-	fmt.Println("Hello world!")
+	fmt.Println("Dome")
+	fmt.Println("Done")
 }
